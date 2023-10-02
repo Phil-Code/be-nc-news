@@ -5,7 +5,7 @@ const seed = require('../db/seeds/seed')
 const request = require('supertest')
 
 beforeEach(()=> seed(data))
-
+afterAll(()=> db.end())
 
 
 describe('GET/api/topics', ()=>{
