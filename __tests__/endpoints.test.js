@@ -1,13 +1,11 @@
 const app = require('../app')
 const data = require('../db/data/test-data')
-const db = require('../db/connection')
 const seed = require('../db/seeds/seed')
 const request = require('supertest')
 const testEndpoints = require('../endpoints.json')
 
-beforeEach(()=>{
-    seed(data)
-});
+beforeEach(()=> seed(data)
+);
 
 describe('GET/api/topics', ()=>{
     test('responds with a 200 status and sends an array of topic objects to the client', ()=>{
@@ -25,7 +23,7 @@ describe('GET/api/topics', ()=>{
     })
 })
 
-describe.only('GET/api', ()=>{
+describe('GET/api', ()=>{
     test('responds with 200 status code and an object describing all available endpoints', ()=>{
         return request(app)
         .get('/api')
