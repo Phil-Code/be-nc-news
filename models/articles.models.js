@@ -11,7 +11,6 @@ exports.fetchArticleById = async (id) =>{
         return response.rows[0]
     }
 }
-
 exports.fetchArticles = async () =>{
     const result = await db.query(`
         SELECT articles.author AS author, 
@@ -31,4 +30,3 @@ exports.fetchArticles = async () =>{
     `)
     return result.rows;
 }
-
