@@ -1,9 +1,13 @@
 const express = require('express');
-const { getTopics, getArticles } = require('./controllers/topics.controllers');
+const { getTopics } = require('./controllers/topics.controllers');
+const { getApi } = require('./controllers/api.controllers');
+const { getArticles } = require('./controllers/articles.controllers');
 const app = express();
 
 app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
+
+app.get('/api', getApi)
 
 app.all('/*', (req, res, next)=>{
     next({status: 404, msg: 'resource not found'})

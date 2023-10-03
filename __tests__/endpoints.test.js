@@ -1,8 +1,9 @@
 const app = require('../app')
 const data = require('../db/data/test-data')
-const db = require('../db/connection')
 const seed = require('../db/seeds/seed')
 const request = require('supertest')
+const testEndpoints = require('../endpoints.json')
+const db = require('../db/connection')
 
 beforeEach(()=>seed(data));
 afterAll(()=> db.end());
@@ -57,6 +58,24 @@ describe('GET/api/articles', ()=>{
         .then(({body})=>{
             const articles = body.articles;
             expect(articles[0].comment_count).toBe('2')
+        })
+    })
+})
+describe('GET/api', ()=>{
+    test('responds with 200 status code and an object describing all available endpoints', ()=>{
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body})=>{
+            const endpoints = body.endpoints;
+            const endpointsKeys = Object.keys(body.endpoints)
+            const testEndpointsKeys = Object.keys(testEndpoints)
+            expect(endpointsKeys).toEqual(testEndpointsKeys)
+            endpointsKeys.forEach((key)=>{
+                expect(typeof endpoints[key].description).toBe('string')
+                expect(Array.isArray(endpoints[key].queries)).toBe(true)
+                expect(typeof endpoints[key].exampleResponse).toBe('object')
+            })
         })
     })
 })
