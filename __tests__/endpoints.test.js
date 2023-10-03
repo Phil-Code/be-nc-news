@@ -43,3 +43,31 @@ describe('GET/api', ()=>{
         })
     })
 })
+describe('GET/api/articles/3/comments', ()=>{
+    test('sends 200 status code and an array of comments for the selcted article', ()=>{
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then(({body})=>{
+            const {comments} = body;
+            expect(comments.length).toBe(2)
+            const sampleComment = {
+                comment_id: 11,
+                body: "Ambidextrous marsupial",
+                votes: 0,
+                author: "icellusedkars",
+                article_id: 3,
+                created_at: "2020-09-19T23:10:00.000Z",
+              }
+            expect(comments[0]).toMatchObject(sampleComment)
+        })
+    })
+    test('comments are sorted in date order, the most recent first', ()=>{
+        return request(app)
+        .get('/api/articles/3/comments')
+        .then(({body})=>{
+            const {comments} = body
+            expect(comments).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+})
