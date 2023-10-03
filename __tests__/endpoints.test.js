@@ -59,7 +59,6 @@ describe('GET/api/articles', ()=>{
             expect(articles[0].comment_count).toBe('2')
         })
     })
-})
 });
 
 describe('GET/api', ()=>{
