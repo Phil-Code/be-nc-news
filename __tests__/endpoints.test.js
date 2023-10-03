@@ -48,7 +48,6 @@ describe('GET/api/articles', ()=>{
         .get('/api/articles')
         .then(({body})=>{
             const articles = body.articles;
-            console.log(articles)
             expect(articles).toBeSortedBy('created_at', {descending: true})
         })
     }) 
