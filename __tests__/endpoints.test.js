@@ -46,18 +46,24 @@ describe('GET/api', ()=>{
 describe('GET/api/articles/:article_id', ()=>{
     test('returns a 200 status code and the requested article object to the client', ()=>{
         return request(app)
-        .get('/api/articles/2')
+        .get('/api/articles/1')
         .expect(200)
         .then(({body})=>{
             const article= body.article
-            expect(article.title).toBe('Sony Vaio; or, The Laptop')
-            expect(article.topic).toBe('mitch')
-            expect(article.author).toBe('icellusedkars')
-            expect(typeof article.body).toBe('string')
-            expect(typeof article.created_at).toBe('string')
-            expect(typeof article.votes).toBe('number')
-            expect(article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+            const testArticle = {
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: "2020-07-09T20:11:00.000Z",
+                votes: 100,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              }
+            expect(article).toMatchObject(testArticle)
         })
+          
     })
     test('returns 404 status code and resource not found message when client enters valid but non-existent id', ()=>{
         return request(app)
