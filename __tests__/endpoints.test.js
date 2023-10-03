@@ -72,7 +72,7 @@ describe('GET/api/articles/:article_id', ()=>{
         .get('/api/articles/invalid_input')
         .expect(400)
         .then(({body})=>{
-            expect(body.msg).toBe('invalid id type')
+            expect(body.msg).toBe('bad request')
         })
     })
 });
