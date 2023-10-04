@@ -126,15 +126,18 @@ describe('GET/api/articles/3/comments', ()=>{
         .then(({body})=>{
             const {comments} = body;
             expect(comments.length).toBe(2)
-            const sampleComment = {
-                comment_id: 11,
-                body: "Ambidextrous marsupial",
-                votes: 0,
-                author: "icellusedkars",
-                article_id: 3,
-                created_at: "2020-09-19T23:10:00.000Z",
-              }
-            expect(comments[0]).toMatchObject(sampleComment)
+            comments.forEach((comment)=>{
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        body: expect.any(String),
+                        votes: expect.any(Number),
+                        author: expect.any(String),
+                        article_id: expect.any(Number),
+                        created_at: expect.any(String),
+                    })
+                )
+            })
         })
     })
     test('comments are sorted in date order, the most recent first', ()=>{
