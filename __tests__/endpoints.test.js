@@ -183,7 +183,6 @@ describe('POST/api/articles/:article_id/comments', ()=>{
         .send(input)
         .expect(201)
         .then(({body})=>{
-            console.log(body.postedComment)
             expect(body.postedComment).toMatchObject({
                 author: 'lurker', 
                 body: 'a freshly posted comment', 
@@ -201,7 +200,6 @@ describe('POST/api/articles/:article_id/comments', ()=>{
         .send(input)
         .expect(201)
         .then(({body})=>{
-            console.log(body.postedComment)
             expect(body.postedComment).toMatchObject({
                 author: 'lurker', 
                 body: 'a freshly posted comment', 
