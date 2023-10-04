@@ -28,6 +28,21 @@
       ]
     }
   },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for the selected article",
+    "queries": ["sort_by"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "body": " I carry a log — yes. Is it funny to you? It is not to me.",
+          "votes": -100,
+          "author": "icellusedkars",
+          "article_id": 1,
+          "created_at": 1582459260000
+        }
+      ]
+    }
+  },    
   "GET /api/articles/:article_id": {
     "description": "serves an individual article requested by id",
     "queries": [],
