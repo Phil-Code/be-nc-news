@@ -78,8 +78,7 @@ describe('GET/api', ()=>{
             })
         })
     })
-});
-
+})
 describe('GET/api/articles/:article_id', ()=>{
     test('returns a 200 status code and the requested article object to the client', ()=>{
         return request(app)
@@ -113,6 +112,62 @@ describe('GET/api/articles/:article_id', ()=>{
     test('returns 400 status code and bad request message when client enters an invalid id type', ()=>{
         return request(app)
         .get('/api/articles/invalid_input')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
+});
+describe('GET/api/articles/3/comments', ()=>{
+    test('sends 200 status code and an array of comments for the selcted article', ()=>{
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then(({body})=>{
+            const {comments} = body;
+            expect(comments.length).toBe(2)
+            comments.forEach((comment)=>{
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        body: expect.any(String),
+                        votes: expect.any(Number),
+                        author: expect.any(String),
+                        article_id: expect.any(Number),
+                        created_at: expect.any(String),
+                    })
+                )
+            })
+        })
+    })
+    test('comments are sorted in date order, the most recent first', ()=>{
+        return request(app)
+        .get('/api/articles/3/comments')
+        .then(({body})=>{
+            const {comments} = body
+            expect(comments).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('sends 200 status code and an empty array when client requests an existing article with no related comments', ()=>{
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({body})=>{
+            const comments = body.comments;
+            expect(comments.length).toBe(0)
+        })
+    })
+    test('sends 404 status code and "resource not found" message when client requests a valid but non-existent article', ()=>{
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('resource not found')
+        })
+    })
+    test('sends 400 status code and "bad request" message when client requests an article with an invalid id type', ()=>{
+        return request(app)
+        .get('/api/articles/invalid_request/comments')
         .expect(400)
         .then(({body})=>{
             expect(body.msg).toBe('bad request')

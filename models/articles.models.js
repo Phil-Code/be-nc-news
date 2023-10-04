@@ -1,5 +1,17 @@
 const db = require('../db/connection');
+const { checkExists } = require('../helpers');
 
+exports.fetchArticleComments = async (id) =>{
+    const result = await db.query(`
+    SELECT * FROM comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC;
+    `, [id])
+    if (!result.rows.length){
+        await checkExists('articles', 'article_id', id)
+    } 
+    return result.rows
+}
 exports.fetchArticleById = async (id) =>{
     const response = await db.query(`
     SELECT * FROM articles
