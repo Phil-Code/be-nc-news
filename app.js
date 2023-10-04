@@ -3,6 +3,7 @@ const { getTopics } = require('./controllers/topics.controllers');
 const { getApi } = require('./controllers/api.controllers');
 const { getArticles, getArticleById, getArticleComments, postArticleComment } = require('./controllers/articles.controllers');
 const { handleSQLErrors, handleCustomErrors, handleServerErrors } = require('./controllers/error.controllers');
+const { getAllUsers } = require('./controllers/users.controllers');
 
 const app = express();
 app.use(express.json());
@@ -12,6 +13,7 @@ app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id', getArticleById)
 app.get('/api/articles/:article_id/comments', getArticleComments)
+app.get('/api/users', getAllUsers)
 
 app.post('/api/articles/:article_id/comments', postArticleComment)
 
