@@ -42,3 +42,16 @@ exports.fetchArticles = async () =>{
     `)
     return result.rows;
 }
+exports.insertArticleComment = async (comment, id) =>{
+
+    if (!comment.body){
+        return Promise.reject({status: 400, msg: 'bad request'})
+    }
+
+    await checkExists('articles', 'article_id', id);
+
+    const result = await db.query(`
+    INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;
+    `, [comment.username, comment.body, id])
+    return result.rows[0]
+}
