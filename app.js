@@ -1,16 +1,20 @@
 const express = require('express');
 const { getTopics } = require('./controllers/topics.controllers');
 const { getApi } = require('./controllers/api.controllers');
-const { getArticleComments, getArticles, getArticleById  } = require('./controllers/articles.controllers');
+const { getArticleComments, getArticles, getArticleById, patchArticle  } = require('./controllers/articles.controllers');
 const { handleSQLErrors, handleCustomErrors, handleServerErrors } = require('./controllers/error.controllers');
 
 const app = express();
+
+app.use(express.json())
 
 app.get('/api', getApi)
 app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id', getArticleById)
 app.get('/api/articles/:article_id/comments', getArticleComments)
+
+app.patch('/api/articles/:article_id', patchArticle)
 
 app.all('/*', (req, res, next)=>{
     next({status: 404, msg: 'resource not found'})
