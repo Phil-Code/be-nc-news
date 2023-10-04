@@ -37,8 +37,7 @@ exports.insertArticleComment = async (comment, id) =>{
         return Promise.reject({status: 400, msg: 'bad request'})
     }
 
-    await checkExists('articles', 'article_id', id)
-    await checkExists('users', 'username', comment.username)
+    await Promise.all([checkExists('articles', 'article_id', id), checkExists('users', 'username', comment.username)])
 
     const result = await db.query(`
     INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;
