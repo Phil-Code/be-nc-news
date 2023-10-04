@@ -67,5 +67,10 @@
       "article_id": 9,
       "created_at": 1586179020000
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "accepts a comment id and deleted that comment",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
