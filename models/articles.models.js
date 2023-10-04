@@ -1,7 +1,7 @@
 const db = require('../db/connection');
 const { checkExists } = require('../helpers');
 
-exports.fetchArticleComments = async (id) =>{
+exports.fetchArticleComments = async (id, topic) =>{
     const result = await db.query(`
     SELECT * FROM comments
     WHERE article_id = $1
@@ -23,23 +23,28 @@ exports.fetchArticleById = async (id) =>{
         return response.rows[0]
     }
 }
-exports.fetchArticles = async () =>{
-    const result = await db.query(`
-        SELECT articles.author AS author, 
-        title, 
-        articles.article_id AS article_id,
-        COUNT(comments.article_id) AS comment_count, 
-        topic, 
-        articles.created_at AS created_at, 
-        articles.votes AS votes, 
-        article_img_url
-        FROM articles
-        LEFT JOIN comments
-        on articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC
-        ;
-    `)
+exports.fetchArticles = async (topic) =>{
+    let queries = [];
+    let queryString = ` 
+    SELECT articles.author AS author, 
+    title, 
+    articles.article_id AS article_id,
+    COUNT(comments.article_id) AS comment_count, 
+    topic, 
+    articles.created_at AS created_at, 
+    articles.votes AS votes, 
+    article_img_url
+    FROM articles
+    LEFT JOIN comments
+    on articles.article_id = comments.article_id
+     `
+    if (topic){
+        queryString += `WHERE topic = $1 `
+        queries.push(topic)
+    } 
+    
+    const result = await db.query(queryString + 'GROUP BY articles.article_id ORDER BY articles.created_at DESC;', queries)
+    
     return result.rows;
 }
 exports.insertArticleComment = async (comment, id) =>{

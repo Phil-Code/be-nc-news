@@ -59,6 +59,52 @@ describe('GET/api/articles', ()=>{
             expect(articles[0].comment_count).toBe('2')
         })
     })
+    test('filters the returned articles by topic if a topic query is provided', ()=>{
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body})=>{
+            const {articles} = body;
+            expect(articles.length).toBe(12)
+            articles.forEach((article)=>{
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    article_img_url: expect.any(String),
+                    votes: expect.any(Number),
+                    comment_count: expect.any(String),
+                })
+            })
+
+        })
+    })
+    test('filtered articles are also sorted in descending date order by default', ()=>{
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body})=>{
+            const articles = body.articles;
+            expect(articles).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('responds with 200 status code and an empty array if no results match a valid filter query', ()=>{
+        return request(app)
+        .get('/api/articles?topic=dogs')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles).toEqual([])
+        })
+    })
+    test('responds with 200 status code and an array of all available articles if client submits an invalid query term', ()=>{
+        return request(app)
+        .get('/api/articles?invalid_query=cats')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles.length).toBe(13)
+        })
+    })
 });
 
 describe('GET/api', ()=>{
