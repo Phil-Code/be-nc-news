@@ -174,6 +174,82 @@ describe('GET/api/articles/:article_id/comments', ()=>{
         })
     })
 });
+describe('POST/api/articles/:article_id/comments', ()=>{
+    test('responds with 201 status code and an object representing the newly posted comment', ()=>{
+        const input = {username: 'lurker', body: 'a freshly posted comment'};
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(input)
+        .expect(201)
+        .then(({body})=>{
+            expect(body.postedComment).toMatchObject({
+                author: 'lurker', 
+                body: 'a freshly posted comment', 
+                article_id: 2, 
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            })
+        })
+    })
+    test('201 and post still successful if additional properties are present, as long as a username and body are sent by the clinet', ()=>{
+        const input = {username: 'lurker', body: 'a freshly posted comment', additionalProperty1: 'useless information', additionalProperty2: 'more useless information'};
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(input)
+        .expect(201)
+        .then(({body})=>{
+            expect(body.postedComment).toMatchObject({
+                author: 'lurker', 
+                body: 'a freshly posted comment', 
+                article_id: 2, 
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            })
+        })
+    })
+    test('responds with 400 and "bad request" message when client attempts to post content with no username or body', ()=>{
+        const input = {wrongName: 'lurker', wrongBody: 'a post that will fail'}
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(input)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
+    test('responds with a 400 and "bad request" message when the client attempts to post to an invalid article id', ()=>{
+        const input = {username: 'lurker', body: 'a post that will fail'};
+        return request(app)
+        .post('/api/articles/invalid_request/comments')
+        .send(input)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe(('bad request'))
+        })
+    })
+    test('responds with 404 and "resource not found" message when client attempts to post a comment to a valid but non-existent article id', ()=>{
+        const input = {username: 'lurker', body: 'a post that will fail'};
+        return request(app)
+        .post('/api/articles/999/comments')
+        .send(input)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('resource not found')
+        })
+    })  
+    test('responds with a 404 status code and "user not found" when the username in the comment object does not exist in the users table', ()=>{
+        const input = {username: 'bob', body: 'a post that will fail'}
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(input)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('user not found')
+        })
+    })
+})
 describe('PATCH/api/articles/:article_id', ()=>{
     test('an article can have its votes property updated and the sucesfully updated article is returned', () =>{
         const input = {inc_votes : -10};
