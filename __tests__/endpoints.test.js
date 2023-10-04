@@ -183,7 +183,33 @@ describe('POST/api/articles/:article_id/comments', ()=>{
         .send(input)
         .expect(201)
         .then(({body})=>{
-            expect(body.postedComment).toMatchObject({author: 'lurker', body: 'a freshly posted comment', article_id: 2})
+            console.log(body.postedComment)
+            expect(body.postedComment).toMatchObject({
+                author: 'lurker', 
+                body: 'a freshly posted comment', 
+                article_id: 2, 
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            })
+        })
+    })
+    test('201 and post still successful if additional properties are present, as long as a username and body are sent by the clinet', ()=>{
+        const input = {username: 'lurker', body: 'a freshly posted comment', additionalProperty1: 'useless information', additionalProperty2: 'more useless information'};
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(input)
+        .expect(201)
+        .then(({body})=>{
+            console.log(body.postedComment)
+            expect(body.postedComment).toMatchObject({
+                author: 'lurker', 
+                body: 'a freshly posted comment', 
+                article_id: 2, 
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            })
         })
     })
     test('responds with 400 and "bad request" message when client attempts to post content with no username or body', ()=>{
@@ -216,14 +242,14 @@ describe('POST/api/articles/:article_id/comments', ()=>{
             expect(body.msg).toBe('resource not found')
         })
     })
-    test('responds with a 404 status code and "resource not found" when the username in the comment object does not exist in the users table', ()=>{
+    test('responds with a 404 status code and "user not found" when the username in the comment object does not exist in the users table', ()=>{
         const input = {username: 'bob', body: 'a post that will fail'}
         return request(app)
         .post('/api/articles/2/comments')
         .send(input)
         .expect(404)
         .then(({body})=>{
-            expect(body.msg).toBe('resource not found')
+            expect(body.msg).toBe('user not found')
         })
     })
 })
