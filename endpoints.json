@@ -68,6 +68,11 @@
       "created_at": 1586179020000
     }
   },
+  "DELETE /api/comments/:comment_id": {
+    "description": "accepts a comment id and deleted that comment",
+    "queries": [],
+    "exampleResponse": {}
+},
   "PATCH /api/articles/:article_id": {
     "description": "accepts an updated value for an article's votes property and serves the article once updated",
     "queries": [],

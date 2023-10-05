@@ -297,6 +297,26 @@ describe('PATCH/api/articles/:article_id', ()=>{
             expect(body.msg).toBe('bad request')
         })
     })
+describe('DELETE/api/comments/:comment_id', ()=>{
+    test('responds with  204 and no content when comment successfully deleted', ()=>{
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+        .then(({body})=>{
+            expect(body).toEqual({})
+        })
+    })
+    test('responds with 400 and "bad request" when client attempts to delete a comment with an invalid id', ()=>{
+        return request(app)
+        .delete('/api/comments/invalid_id')
+    test('responds with 404 and "resource not found" when client attempts to delete a comment that does not exist but with a valid id', ()=>{
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
     test('responds with 400 status code and "bad request" message when client attempts to modify an article with an invalid id type', ()=>{
         const input = {inc_votes: 100}
         return request(app)
