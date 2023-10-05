@@ -258,17 +258,33 @@ describe('PATCH/api/articles/:article_id', ()=>{
         .send(input)
         .expect(200)
         .then(({body})=>{
-            expect(body.article).toMatchObject({votes : -10, article_id: 3})
+            expect(body.article).toMatchObject({
+                votes : -10, 
+                article_id: 3,
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: 'some gifs',
+                created_at: '2020-11-03T09:12:00.000Z',
+                article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+            })
         })
     })
-    test('responds with 400 status code and "bad request" message when client sends an object with no inc_votes property', ()=>{
+    test('responds with 200 status code and returns the arrticle with no amendments when client sends an object with no inc_votes property', ()=>{
         const input = {wrong_property_name: 100}
         return request(app)
         .patch('/api/articles/3')
         .send(input)
-        .expect(400)
+        .expect(200)
         .then(({body})=>{
-            expect(body.msg).toBe('bad request')
+            expect(body.article).toMatchObject({
+                votes : 0, 
+                article_id: 3,
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: 'some gifs',
+                created_at: '2020-11-03T09:12:00.000Z',
+                article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+            })
         })
     })
     test('responds with 400 status code and "bad request" message when client sends an object with an incorrect data type for votes', ()=>{
