@@ -95,12 +95,18 @@ describe('GET/api/articles/:article_id', ()=>{
                 created_at: "2020-07-09T20:11:00.000Z",
                 votes: 100,
                 article_img_url:
-                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-                comment_count: '11'
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
               }
             expect(article).toMatchObject(testArticle)
+        })    
+    })
+    test('the returned article has a comment_count property correctly showing how many comments reference the article', ()=>{
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.article).toMatchObject({ comment_count: '11'})
         })
-          
     })
     test('returns 404 status code and resource not found message when client enters valid but non-existent id', ()=>{
         return request(app)
