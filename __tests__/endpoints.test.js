@@ -118,7 +118,7 @@ describe('GET/api/articles/:article_id', ()=>{
         })
     })
 });
-describe('GET/api/articles/3/comments', ()=>{
+describe('GET/api/articles/:article_id/comments', ()=>{
     test('sends 200 status code and an array of comments for the selcted article', ()=>{
         return request(app)
         .get('/api/articles/3/comments')
@@ -239,7 +239,9 @@ describe('POST/api/articles/:article_id/comments', ()=>{
         .then(({body})=>{
             expect(body.msg).toBe('resource not found')
         })
+    })  
     })
+
     test('responds with a 404 status code and "user not found" when the username in the comment object does not exist in the users table', ()=>{
         const input = {username: 'bob', body: 'a post that will fail'}
         return request(app)
@@ -251,3 +253,72 @@ describe('POST/api/articles/:article_id/comments', ()=>{
         })
     })
 })
+describe('PATCH/api/articles/:article_id', ()=>{
+    test('an article can have its votes property updated and the sucesfully updated article is returned', () =>{
+        const input = {inc_votes : -10};
+        return request(app)
+        .patch('/api/articles/3')
+        .send(input)
+        .expect(200)
+        .then(({body})=>{
+            expect(body.article).toMatchObject({
+                votes : -10, 
+                article_id: 3,
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: 'some gifs',
+                created_at: '2020-11-03T09:12:00.000Z',
+                article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+            })
+        })
+    })
+    test('responds with 200 status code and returns the arrticle with no amendments when client sends an object with no inc_votes property', ()=>{
+        const input = {wrong_property_name: 100}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(input)
+        .expect(200)
+        .then(({body})=>{
+            expect(body.article).toMatchObject({
+                votes : 0, 
+                article_id: 3,
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: 'some gifs',
+                created_at: '2020-11-03T09:12:00.000Z',
+                article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+            })
+        })
+    })
+    test('responds with 400 status code and "bad request" message when client sends an object with an incorrect data type for votes', ()=>{
+        const input = {inc_votes: 'one hundred'}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(input)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
+    test('responds with 400 status code and "bad request" message when client attempts to modify an article with an invalid id type', ()=>{
+        const input = {inc_votes: 100}
+        return request(app)
+        .patch('/api/articles/invalid_id')
+        .send(input)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
+    test('responds with 404 status code and "resource not found" message when client attempts to modify an article that has a valid id but that does not exist', ()=>{
+        const input = {inc_votes: 100}
+        return request(app)
+        .patch('/api/articles/999')
+        .send(input)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('resource not found')
+        })
+    })
+})
+
