@@ -250,6 +250,20 @@ describe('POST/api/articles/:article_id/comments', ()=>{
         })
     })
 })
+describe('GET/api/users', ()=>{
+    test('responds with a 200 status code and an array of all user objects', ()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body})=>{
+            const {users} = body
+            expect(users.length).toBe(4)
+            users.forEach((user)=>{
+                expect(user).toMatchObject({username: expect.any(String), name: expect.any(String), avatar_url: expect.any(String)})
+            })
+        })
+    })
+})
 describe('PATCH/api/articles/:article_id', ()=>{
     test('an article can have its votes property updated and the successfully updated article is returned', () =>{
         const input = {inc_votes : -10};
@@ -334,3 +348,4 @@ describe('DELETE/api/comments/:comment_id', ()=>{
         })
     })
 })
+
