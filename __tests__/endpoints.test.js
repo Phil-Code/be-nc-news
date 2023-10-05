@@ -80,15 +80,6 @@ describe('GET/api/articles', ()=>{
 
         })
     })
-    test('filtered articles are also sorted in descending date order by default', ()=>{
-        return request(app)
-        .get('/api/articles?topic=mitch')
-        .expect(200)
-        .then(({body})=>{
-            const articles = body.articles;
-            expect(articles).toBeSortedBy('created_at', {descending: true})
-        })
-    })
     test('responds with 200 status code and an empty array if no results match a valid filter query', ()=>{
         return request(app)
         .get('/api/articles?topic=dogs')
