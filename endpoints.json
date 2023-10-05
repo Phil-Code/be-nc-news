@@ -68,7 +68,6 @@
       "created_at": 1586179020000
     }
   },
-
   "GET /api/users": {
     "description": "serves an array of all user objects",
     "queries": ["sort_by"],
@@ -77,11 +76,7 @@
       "name": "jonny",
       "avatar_url":
         "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-=======
-  "DELETE /api/comments/:comment_id": {
-    "description": "accepts a comment id and deleted that comment",
-    "queries": [],
-    "exampleResponse": {}
+    }
 },
   "PATCH /api/articles/:article_id": {
     "description": "accepts an updated value for an article's votes property and serves the article once updated",
@@ -95,5 +90,10 @@
       "votes": 0,
       "comment_count": 6
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "accepts a comment id and deleted that comment",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
