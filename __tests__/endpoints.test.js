@@ -174,7 +174,6 @@ describe('GET/api/articles/:article_id/comments', ()=>{
         })
     })
 });
-
 describe('POST/api/articles/:article_id/comments', ()=>{
     test('responds with 201 status code and an object representing the newly posted comment', ()=>{
         const input = {username: 'lurker', body: 'a freshly posted comment'};
@@ -240,8 +239,6 @@ describe('POST/api/articles/:article_id/comments', ()=>{
             expect(body.msg).toBe('resource not found')
         })
     })  
-    })
-
     test('responds with a 404 status code and "user not found" when the username in the comment object does not exist in the users table', ()=>{
         const input = {username: 'bob', body: 'a post that will fail'}
         return request(app)
@@ -321,4 +318,3 @@ describe('PATCH/api/articles/:article_id', ()=>{
         })
     })
 })
-
