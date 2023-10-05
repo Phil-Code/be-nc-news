@@ -97,6 +97,34 @@ describe('GET/api/articles', ()=>{
         })
     })
 });
+describe('GET/api/articles - sorting queries', ()=>{
+    test('articles can be sorted by a valid column, defaulting to a descending sorting order', ()=>{
+        return request(app)
+        .get('/api/articles?sort_by=article_id')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles).toBeSortedBy('article_id', {descending: true})
+        })
+    })
+    test('articles can be sorted in ascending order rather than the default descending order', ()=>{
+        return request(app)
+        .get('/api/articles?sort_by=article_id&&order=asc&&topic=mitch')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles.length).toBe(12)
+            expect(body.articles).toBeSortedBy('article_id', {ascending: true})
+        })
+    })
+    test('an invalid sort query will result in the articles being returned with default sort properties', ()=>{
+        return request(app)
+        .get('/api/articles?sort_by=invalid_term')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles.length).toBe(13)
+            expect(body.articles).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+})
 
 describe('GET/api', ()=>{
     test('responds with 200 status code and an object describing all available endpoints', ()=>{
