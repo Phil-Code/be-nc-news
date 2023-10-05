@@ -42,6 +42,25 @@ exports.fetchArticles = async () =>{
     `)
     return result.rows;
 }
+exports.updateArticle = async (newVotes, id) =>{
+    let result;
+   
+    if (!newVotes){
+        result = await db.query(`SELECT * FROM articles WHERE article_id = $1`, [id])
+    } else {
+        result = await db.query(`
+        UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        returning *;
+    `, [newVotes, id])
+    }
+    if (!result.rows.length){
+        await checkExists('articles', 'article_id', id)
+    }
+    return result.rows[0]
+}
+
 exports.insertArticleComment = async (comment, id) =>{
 
     if (!comment.body){
