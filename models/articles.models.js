@@ -47,7 +47,6 @@ exports.updateArticle = async (newVotes, id) =>{
    
     if (!newVotes){
         result = await db.query(`SELECT * FROM articles WHERE article_id = $1`, [id])
-        console.log(result)
     } else {
         result = await db.query(`
         UPDATE articles
