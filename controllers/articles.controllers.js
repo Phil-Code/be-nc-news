@@ -1,5 +1,6 @@
 const { fetchArticleComments, fetchArticleById, fetchArticles, updateArticle,  insertArticleComment  } = require("../models/articles.models");
 
+
 exports.getArticleComments = async (req, res, next) =>{
     const id = req.params.article_id;
     try {
@@ -40,6 +41,7 @@ exports.patchArticle = async (req, res, next) =>{
         next(err)
     }
 }
+
 exports.postArticleComment = async (req, res, next) =>{
     try {
         const id = req.params.article_id;

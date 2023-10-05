@@ -7,8 +7,6 @@ const { handleSQLErrors, handleCustomErrors, handleServerErrors } = require('./c
 const app = express();
 app.use(express.json());
 
-app.use(express.json())
-
 app.get('/api', getApi)
 app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
