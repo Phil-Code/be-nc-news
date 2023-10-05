@@ -251,7 +251,7 @@ describe('POST/api/articles/:article_id/comments', ()=>{
     })
 })
 describe('PATCH/api/articles/:article_id', ()=>{
-    test('an article can have its votes property updated and the sucesfully updated article is returned', () =>{
+    test('an article can have its votes property updated and the successfully updated article is returned', () =>{
         const input = {inc_votes : -10};
         return request(app)
         .patch('/api/articles/3')
@@ -269,7 +269,7 @@ describe('PATCH/api/articles/:article_id', ()=>{
             })
         })
     })
-    test('responds with 200 status code and returns the arrticle with no amendments when client sends an object with no inc_votes property', ()=>{
+    test('responds with 200 status code and returns the article with no amendments when client sends an object with no inc_votes property', ()=>{
         const input = {wrong_property_name: 100}
         return request(app)
         .patch('/api/articles/3')
@@ -297,6 +297,17 @@ describe('PATCH/api/articles/:article_id', ()=>{
             expect(body.msg).toBe('bad request')
         })
     })
+    test('responds with 404 status code and "resource not found" message when client attempts to modify an article that has a valid id but that does not exist', ()=>{
+        const input = {inc_votes: 100}
+        return request(app)
+        .patch('/api/articles/999')
+        .send(input)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('resource not found')
+        })
+    })
+})
 describe('DELETE/api/comments/:comment_id', ()=>{
     test('responds with  204 and no content when comment successfully deleted', ()=>{
         return request(app)
@@ -309,29 +320,14 @@ describe('DELETE/api/comments/:comment_id', ()=>{
     test('responds with 400 and "bad request" when client attempts to delete a comment with an invalid id', ()=>{
         return request(app)
         .delete('/api/comments/invalid_id')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
     test('responds with 404 and "resource not found" when client attempts to delete a comment that does not exist but with a valid id', ()=>{
         return request(app)
         .delete('/api/comments/999')
-        .expect(400)
-        .then(({body})=>{
-            expect(body.msg).toBe('bad request')
-        })
-    })
-    test('responds with 400 status code and "bad request" message when client attempts to modify an article with an invalid id type', ()=>{
-        const input = {inc_votes: 100}
-        return request(app)
-        .patch('/api/articles/invalid_id')
-        .send(input)
-        .expect(400)
-        .then(({body})=>{
-            expect(body.msg).toBe('bad request')
-        })
-    })
-    test('responds with 404 status code and "resource not found" message when client attempts to modify an article that has a valid id but that does not exist', ()=>{
-        const input = {inc_votes: 100}
-        return request(app)
-        .patch('/api/articles/999')
-        .send(input)
         .expect(404)
         .then(({body})=>{
             expect(body.msg).toBe('resource not found')
