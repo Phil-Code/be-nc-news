@@ -34,8 +34,17 @@ exports.fetchArticleById = async (id) =>{
         return response.rows[0]
     }
 }
-exports.fetchArticles = async (topic) =>{
-    let queries = [];
+exports.fetchArticles = async (sortBy, order, topic) =>{
+    const greenlist = ['article_id', 'title', 'topic', 'author', 'created_at', 'votes']
+    
+    if (!greenlist.includes(sortBy)){
+        sortBy = 'created_at'
+    } 
+    if (order !== 'asc'){
+        order = 'desc'
+    } 
+    
+    const queries = [];
     let queryString = ` 
     SELECT articles.author AS author, 
     title, 
@@ -53,9 +62,9 @@ exports.fetchArticles = async (topic) =>{
         queryString += `WHERE topic = $1 `
         queries.push(topic)
     } 
-    
-    const result = await db.query(queryString + 'GROUP BY articles.article_id ORDER BY articles.created_at DESC;', queries)
-    
+   
+    queryString += `GROUP BY articles.article_id ORDER BY ${sortBy} ${order}`
+    const result = await db.query(queryString, queries)
     return result.rows;
 }
 exports.updateArticle = async (newVotes, id) =>{
