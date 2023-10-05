@@ -9,6 +9,7 @@ https://nc-news-qqh3.onrender.com/api
 # features
 
 articles can be filtered by topic
+articles can be sorted
 comments can be filtered by article
 articles display a dynamic count of the number of comments associated with them
 users can post, patch and delete comments
@@ -29,6 +30,7 @@ At the top level of your newly cloned repository please create two .env files wi
 
 Then, in the terminal run the following to install the required dependencies and seed the database:
 npm install 
+npm setup-dbs
 npm run seed
 
 # required versions
