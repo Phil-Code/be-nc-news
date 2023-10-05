@@ -1,4 +1,5 @@
-const { fetchArticleById, fetchArticles, fetchArticleComments, insertArticleComment } = require("../models/articles.models");
+const { fetchArticleComments, fetchArticleById, fetchArticles, updateArticle,  insertArticleComment  } = require("../models/articles.models");
+
 
 exports.getArticleComments = async (req, res, next) =>{
     const id = req.params.article_id;
@@ -21,13 +22,27 @@ exports.getArticleById = async (req, res, next) =>{
 }
 
 exports.getArticles = async (req, res, next) =>{
+    const topic = req.query.topic;
     try {
-        const articles = await fetchArticles();
+        const articles = await fetchArticles(topic);
         res.status(200).send({articles})
     } catch(err) {
         next(err)
     }
 }
+
+exports.patchArticle = async (req, res, next) =>{
+
+    try {
+        const id = req.params.article_id;
+        const newVotes = req.body.inc_votes
+        const article = await updateArticle(newVotes, id)
+        res.status(200).send({article})
+    } catch(err){
+        next(err)
+    }
+}
+
 exports.postArticleComment = async (req, res, next) =>{
     try {
         const id = req.params.article_id;
