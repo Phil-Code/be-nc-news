@@ -13,7 +13,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order", "article_id", "created_at", "votes"],
+    "queries": ["author", "topic", "sort_by", "order", "article_id", "created_at", "votes", "limit", "p"],
     "exampleResponse": {
       "articles": [
         {
@@ -30,7 +30,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comments for the selected article",
-    "queries": ["sort_by"],
+    "queries": ["limit", "p"],
     "exampleResponse": {
       "comments": [
         {
