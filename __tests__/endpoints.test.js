@@ -282,7 +282,27 @@ describe('GET/api/articles/:article_id/comments', ()=>{
             expect(body.msg).toBe('bad request')
         })
     })
+
 });
+describe('GETapi/articles/:article_id/comments - pagination', ()=>{
+    test('client can specify a limit to the number of results per page, and the page to return', ()=>{
+        return request(app)
+        .get('/api/articles/1/comments?limit=3&&p=2')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.comments.length).toBe(3)
+            expect(body.comments[0].body).toBe('Fruit pastilles')
+        })
+    })
+    test('if limit or page query is invalid, results are returned without pagination', ()=>{
+        return request(app)
+        .get('/api/articles/1/comments?limit=invalid&&p=also_invalid')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.comments.length).toBe(11)
+        })
+    })
+})
 describe('POST/api/articles/:article_id/comments', ()=>{
     test('responds with 201 status code and an object representing the newly posted comment', ()=>{
         const input = {username: 'lurker', body: 'a freshly posted comment'};

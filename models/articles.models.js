@@ -2,12 +2,17 @@ const format = require('pg-format');
 const db = require('../db/connection');
 const { checkExists } = require('../helpers');
 
-exports.fetchArticleComments = async (id, topic) =>{
-    const result = await db.query(`
-    SELECT * FROM comments
+exports.fetchArticleComments = async (id, limit, p) =>{
+    
+    let queryString = `SELECT * FROM comments
     WHERE article_id = $1
-    ORDER BY created_at DESC;
-    `, [id])
+    ORDER BY created_at DESC `
+
+    if (/[0-9]/g.test(limit) && /[0-9]/g.test(p)){
+        queryString += `LIMIT ${limit} OFFSET ${p * limit - limit}`
+    }
+    const result = await db.query(queryString, [id])
+    
     if (!result.rows.length){
         await checkExists('articles', 'article_id', id)
     } 
