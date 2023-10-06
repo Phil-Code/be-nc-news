@@ -23,6 +23,54 @@ describe('GET/api/topics', ()=>{
         })
     })
 })
+describe('POST/api/topics', ()=>{
+    test('responds with 201 and returns the newly posted topic', ()=>{
+        const input = {
+            slug: "topic name here",
+            description: "description here"
+          }
+        return request(app)
+        .post('/api/topics')
+        .send(input)
+        .expect(201)
+        .then(({body})=>{
+            expect(body.topic).toMatchObject({
+                slug: "topic name here",
+                description: "description here"
+              })
+        })
+    })
+    test('ignores any additional properties as long as required properties are present in the posted object', ()=>{
+        const input = {
+            slug: "topic name here",
+            description: "description here",
+            additional_property: 'not needed'
+          }
+        return request(app)
+        .post('/api/topics')
+        .send(input)
+        .expect(201)
+        .then(({body})=>{
+            expect(body.topic).toMatchObject({
+                slug: "topic name here",
+                description: "description here"
+              })
+         })
+    })
+    test('responds with 400 bad request if client attempts to post a topic without all the required properties', ()=>{
+        const input = {
+            missing_slug: "topic name here",
+            missing_description: "description here"
+          }
+        return request(app)
+        .post('/api/topics')
+        .send(input)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
+})
 describe('GET/api/articles', ()=>{
     test('send a 200 status code and an array of all article objects to the client', ()=>{
         return request(app)

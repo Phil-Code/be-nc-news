@@ -15,6 +15,7 @@ articles display a dynamic count of the number of comments associated with them
 articles can be paginated and display a dynamic count taking into account filter queries
 users can post, patch and delete comments
 user can post and patch articles
+users can post topics
 
 
 # installation
