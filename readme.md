@@ -40,9 +40,4 @@ psql v14.9
 
 # testing
 
-In order to run tests please install jest and jest sorted as development dependencies:
-
-npm install -D jest
-npm install -D jest-sorted
-
 npm run test 
