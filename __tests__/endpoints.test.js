@@ -133,7 +133,36 @@ describe('GET/api/articles - sorting queries', ()=>{
         })
     })
 })
-
+describe('GETapi/articles - pagination', ()=>{
+    test('client can specify a limit to the number of results per page, and the page to return', ()=>{
+        return request(app)
+        .get('/api/articles?limit=5&&p=2&&sort_by=article_id&&order=asc')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles.length).toBe(5)
+            expect(body.articles[0].article_id).toBe(6)
+        })
+    })
+    test('response objects now also have total count property counting all articles which match the query filter', ()=>{
+        return request(app)
+        .get('/api/articles?limit=5&&p=2&&sort_by=article_id&&order=asc&&topic=mitch')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles.length).toBe(5)
+            body.articles.forEach((article)=>{
+                expect(article).toMatchObject({total_count: '12'})
+            })
+        })
+    })
+    test('if limit or page query is invalid, results are returned without pagination', ()=>{
+        return request(app)
+        .get('/api/articles?limit=invalid&&p=also_invalid')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.articles.length).toBe(13)
+        })
+    })
+})
 describe('GET/api', ()=>{
     test('responds with 200 status code and an object describing all available endpoints', ()=>{
         return request(app)

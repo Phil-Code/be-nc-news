@@ -35,7 +35,7 @@ exports.fetchArticleById = async (id) =>{
         return response.rows[0]
     }
 }
-exports.fetchArticles = async (sortBy, order, topic) =>{
+exports.fetchArticles = async (sortBy, order, topic, limit, p) =>{
     const greenlist = ['article_id', 'title', 'topic', 'author', 'created_at', 'votes']
     
     if (!greenlist.includes(sortBy)){
@@ -54,7 +54,8 @@ exports.fetchArticles = async (sortBy, order, topic) =>{
     topic, 
     articles.created_at AS created_at, 
     articles.votes AS votes, 
-    article_img_url
+    article_img_url,
+    count(*) over() AS total_count
     FROM articles
     LEFT JOIN comments
     on articles.article_id = comments.article_id
@@ -64,13 +65,16 @@ exports.fetchArticles = async (sortBy, order, topic) =>{
         queries.push(topic)
     } 
    
-    queryString += `GROUP BY articles.article_id ORDER BY ${sortBy} ${order}`
+    queryString += `GROUP BY articles.article_id ORDER BY ${sortBy} ${order} `
+
+    if (/[0-9]/g.test(limit) && /[0-9]/g.test(p)){
+        queryString += `LIMIT ${limit} OFFSET ${p * limit - limit}`
+    }
     const result = await db.query(queryString, queries)
 
     if (!result.rows.length){
         await checkExists('topics', 'slug', topic)
     }
-
     return result.rows;
 }
 exports.updateArticle = async (newVotes, id) =>{
