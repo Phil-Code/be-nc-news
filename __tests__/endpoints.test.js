@@ -125,6 +125,7 @@ describe('GET/api/articles - sorting queries', ()=>{
         })
     })
 })
+
 describe('GET/api', ()=>{
     test('responds with 200 status code and an object describing all available endpoints', ()=>{
         return request(app)
@@ -332,6 +333,37 @@ describe('GET/api/users', ()=>{
             users.forEach((user)=>{
                 expect(user).toMatchObject({username: expect.any(String), name: expect.any(String), avatar_url: expect.any(String)})
             })
+        })
+    })
+})
+describe.only('GET/api/users/:username', ()=>{
+    test('responds with 200 and a user object when client requests an existing user', ()=>{
+        return request(app)
+        .get('/api/users/lurker')
+        .expect(200)
+        .then(({body})=>{
+            expect(body.user).toMatchObject({
+                username: 'lurker',
+                name: 'do_nothing',
+                avatar_url:
+                  'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+              })
+        })
+    })
+    test('responds with 400 and "bad request" when passed an invalid username', ()=>{
+        return request(app)
+        .get('/api/users/1111')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('invalid username')
+        })
+    })
+    test('responds with 404 and "user not found" when passed a valid username that does not exist', ()=>{
+        return request(app)
+        .get('/api/users/bob')
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('user not found')
         })
     })
 })
