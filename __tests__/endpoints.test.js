@@ -336,7 +336,7 @@ describe('GET/api/users', ()=>{
         })
     })
 })
-describe.only('GET/api/users/:username', ()=>{
+describe('GET/api/users/:username', ()=>{
     test('responds with 200 and a user object when client requests an existing user', ()=>{
         return request(app)
         .get('/api/users/lurker')
@@ -451,4 +451,59 @@ describe('DELETE/api/comments/:comment_id', ()=>{
         })
     })
 })
-
+describe('PATCH/api/comments/:comment_id', ()=>{
+    test('an comment can have its votes property updated and the successfully updated comment is returned', () =>{
+        const input = {inc_votes : 10};
+        return request(app)
+        .patch('/api/comments/1')
+        .send(input)
+        .expect(200)
+        .then(({body})=>{
+            expect(body.comment).toMatchObject( {
+                comment_id: 1,
+                body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                votes: 26,
+                author: "butter_bridge",
+                article_id: 9,
+                created_at: expect.any(String)
+              })
+        })
+    })
+    test('responds with 200 status code and returns the comment with no amendments when client sends an object with no inc_votes property', ()=>{
+        const input = {wrong_property_name: 100}
+        return request(app)
+        .patch('/api/comments/1')
+        .send(input)
+        .expect(200)
+        .then(({body})=>{
+            expect(body.comment).toMatchObject( {
+                comment_id: 1,
+                body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                votes: 16,
+                author: "butter_bridge",
+                article_id: 9,
+                created_at: expect.any(String)
+              })
+        })
+    })
+    test('responds with 400 status code and "bad request" message when client sends an object with an incorrect data type for votes', ()=>{
+        const input = {inc_votes: 'one hundred'}
+        return request(app)
+        .patch('/api/comments/1')
+        .send(input)
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+        })
+    })
+    test('responds with 404 status code and "resource not found" message when client attempts to modify a comment that has a valid id but that does not exist', ()=>{
+        const input = {inc_votes: 100}
+        return request(app)
+        .patch('/api/comments/999')
+        .send(input)
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('resource not found')
+        })
+    })
+})
