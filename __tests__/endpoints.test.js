@@ -425,6 +425,79 @@ describe('PATCH/api/articles/:article_id', ()=>{
         })
     })
 })
+describe('POST/api/articles', ()=>{
+    test('responds with 200 and the newly posted article', ()=>{
+        const input = {
+            title: "test article",
+            topic: "paper",
+            author: "lurker",
+            body: "some test data",
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          }
+          return request(app)
+          .post('/api/articles')
+          .send(input)
+          .expect(200)
+          .then(({body})=>{
+            expect(body.article).toMatchObject({
+                title: "test article",
+                topic: "paper",
+                author: "lurker",
+                body: "some test data",
+                created_at: 1604394720000,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                  article_id: expect.any(Number),
+                  votes: expect.any(Number),
+                  created_at: expect.any(String)
+              })
+          })
+    })
+    test('responds with 200 and default value for img_url if none is provided', ()=>{
+        const input = {
+            title: "test article",
+            topic: "paper",
+            author: "lurker",
+            body: "some test data"
+          }
+        return request(app)
+          .post('/api/articles')
+          .send(input)
+          .expect(200)
+          .then(({body})=>{
+            expect(body.article).toMatchObject({article_img_url: 'https://images.pexels.com/photos/img'})
+          })
+    })
+    test('responds with 400 if the client attempts to post an article without all required propertes', ()=>{
+        const input = {
+            topic: "paper",
+            author: "lurker",
+            body: "some test data"
+          }
+        return request(app)
+          .post('/api/articles')
+          .send(input)
+          .expect(400)
+          .then(({body})=>{
+            expect(body.msg).toBe('bad request')
+          })
+    })
+    test('responds with 404 and when the author does not exist as a user in the database', ()=>{
+        const input = {
+            title: "test article",
+            topic: "paper",
+            author: "does_not_exist",
+            body: "some test data"
+          }
+        return request(app)
+          .post('/api/articles')
+          .send(input)
+          .expect(404)
+          .then(({body})=>{
+            expect(body.msg).toBe('user not found')
+          })
+    })
+})
 describe('DELETE/api/comments/:comment_id', ()=>{
     test('responds with  204 and no content when comment successfully deleted', ()=>{
         return request(app)

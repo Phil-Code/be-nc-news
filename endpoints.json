@@ -88,8 +88,21 @@
       "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
   }
 },
-  "PATCH /api/articles/:article_id": {
-    "description": "accepts an updated value for an article's votes property and serves the article once updated",
+"PATCH /api/articles/:article_id": {
+  "description": "accepts an updated value for an article's votes property and serves the article once updated",
+  "queries": [],
+  "exampleResponse": {
+    "title": "Seafood substitutions are increasing",
+    "topic": "cooking",
+    "author": "weegembump",
+    "body": "Text from the article..",
+    "created_at": "2018-05-30T15:59:13.341Z",
+    "votes": 0,
+    "comment_count": 6
+  }
+},
+  "POST /api/articles": {
+    "description": "accepts a new article and serves the article once posted",
     "queries": [],
     "exampleResponse": {
       "title": "Seafood substitutions are increasing",
@@ -98,7 +111,7 @@
       "body": "Text from the article..",
       "created_at": "2018-05-30T15:59:13.341Z",
       "votes": 0,
-      "comment_count": 6
+      "comment_count": 0
     }
   },
   "PATCH /api/comments/:comment_id": {

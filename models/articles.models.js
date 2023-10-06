@@ -1,3 +1,4 @@
+const format = require('pg-format');
 const db = require('../db/connection');
 const { checkExists } = require('../helpers');
 
@@ -97,5 +98,20 @@ exports.insertArticleComment = async (comment, id) =>{
     const result = await db.query(`
     INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;
     `, [comment.username, comment.body, id])
+    return result.rows[0]
+}
+exports.insertArticle = async (article) =>{
+    
+    if (!article.article_img_url){
+        article.article_img_url = 'https://images.pexels.com/photos/img'
+    }
+   
+    const result = await db.query(`
+        INSERT INTO articles
+        (title, topic, author, body, article_img_url)
+        VALUES 
+        ($1, $2, $3, $4, $5) returning *;
+    `, [article.title, article.topic, article.author, article.body, article.article_img_url])
+    
     return result.rows[0]
 }
