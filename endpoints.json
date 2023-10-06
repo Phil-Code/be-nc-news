@@ -56,7 +56,7 @@
       "comment_count": 6
     }
   },
-  "POST /api/articles/:article_id": {
+  "POST /api/articles/:article_id/comments": {
     "description": "accepts the posting of a new comment associated with an existing article",
     "queries": [],
     "exampleResponse": {

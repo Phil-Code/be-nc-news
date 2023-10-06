@@ -82,7 +82,7 @@ describe('GET/api/articles', ()=>{
     })
     test('responds with 200 status code and an empty array if no results match a valid filter query', ()=>{
         return request(app)
-        .get('/api/articles?topic=dogs')
+        .get('/api/articles?topic=paper')
         .expect(200)
         .then(({body})=>{
             expect(body.articles).toEqual([])
@@ -94,6 +94,14 @@ describe('GET/api/articles', ()=>{
         .expect(200)
         .then(({body})=>{
             expect(body.articles.length).toBe(13)
+        })
+    })
+    test('responds with 404 if client attempts to filter by a topic that does not exist', ()=>{
+        return request(app)
+        .get('/api/articles?topic=no_such_topic')
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('resource not found')
         })
     })
 });

@@ -66,6 +66,11 @@ exports.fetchArticles = async (sortBy, order, topic) =>{
    
     queryString += `GROUP BY articles.article_id ORDER BY ${sortBy} ${order}`
     const result = await db.query(queryString, queries)
+
+    if (!result.rows.length){
+        await checkExists('topics', 'slug', topic)
+    }
+
     return result.rows;
 }
 exports.updateArticle = async (newVotes, id) =>{
