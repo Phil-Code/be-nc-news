@@ -125,7 +125,6 @@ describe('GET/api/articles - sorting queries', ()=>{
         })
     })
 })
-
 describe('GET/api', ()=>{
     test('responds with 200 status code and an object describing all available endpoints', ()=>{
         return request(app)
