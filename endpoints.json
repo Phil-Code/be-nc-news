@@ -137,12 +137,11 @@
   "DELETE /api/comments/:comment_id": {
     "description": "accepts a comment id and deleted that comment",
     "queries": [],
-    "exampleResponse":  {
-      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      "votes": 16,
-      "author": "butter_bridge",
-      "article_id": 9,
-      "created_at": 1586179020000
-    }
+    "exampleResponse":  {}
+  },
+  "DELETE /api/articles/:comment_id": {
+    "description": "accepts an article id and delted that article and all associated comments",
+    "queries": [],
+    "exampleResponse":  {}
   }
 }

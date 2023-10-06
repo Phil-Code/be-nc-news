@@ -1,6 +1,6 @@
-const format = require('pg-format');
 const db = require('../db/connection');
 const { checkExists } = require('../helpers');
+const { removeCommentById } = require('./comments.models');
 
 exports.fetchArticleComments = async (id, limit, p) =>{
     
@@ -100,7 +100,6 @@ exports.updateArticle = async (newVotes, id) =>{
     }
     return result.rows[0]
 }
-
 exports.insertArticleComment = async (comment, id) =>{
 
     if (!comment.body){
@@ -128,4 +127,17 @@ exports.insertArticle = async (article) =>{
     `, [article.title, article.topic, article.author, article.body, article.article_img_url])
     
     return result.rows[0]
+}
+exports.removeArticle = async (articleId) =>{
+
+    await checkExists('articles', 'article_id', articleId)
+
+    const articleComments = await this.fetchArticleComments(articleId)
+    await Promise.all(articleComments.map((comment)=>{
+        
+        return removeCommentById(comment.comment_id)
+    }))
+   
+
+    await db.query(`DELETE FROM articles WHERE article_id = $1`, [articleId])
 }

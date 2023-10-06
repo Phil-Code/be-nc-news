@@ -1,4 +1,4 @@
-const { fetchArticleComments, fetchArticleById, fetchArticles, updateArticle,  insertArticleComment, insertArticle  } = require("../models/articles.models");
+const { fetchArticleComments, fetchArticleById, fetchArticles, updateArticle,  insertArticleComment, insertArticle, removeArticle  } = require("../models/articles.models");
 
 
 exports.getArticleComments = async (req, res, next) =>{
@@ -12,7 +12,6 @@ exports.getArticleComments = async (req, res, next) =>{
         next(err)
     }
 }    
-
 exports.getArticleById = async (req, res, next) =>{
     const id = req.params.article_id
     try {
@@ -22,7 +21,6 @@ exports.getArticleById = async (req, res, next) =>{
         next(err)
     }
 }
-
 exports.getArticles = async (req, res, next) =>{
     const topic = req.query.topic
     const sortBy = req.query.sort_by
@@ -36,7 +34,6 @@ exports.getArticles = async (req, res, next) =>{
         next(err)
     }
 }
-
 exports.patchArticle = async (req, res, next) =>{
 
     try {
@@ -48,7 +45,6 @@ exports.patchArticle = async (req, res, next) =>{
         next(err)
     }
 }
-
 exports.postArticleComment = async (req, res, next) =>{
     try {
         const id = req.params.article_id;
@@ -60,13 +56,21 @@ exports.postArticleComment = async (req, res, next) =>{
         next(err)
     }
 }
-
 exports.postArticle = async (req, res, next) =>{
     const newArticle = req.body;
     try {
         const article = await insertArticle(newArticle)
         res.status(200).send({article})
     } catch(err){
+        next(err)
+    }
+}
+exports.deleteArticle = async (req, res, next) =>{
+    const id = req.params.article_id
+    try {
+        await removeArticle(id)
+        res.status(204).send()
+    } catch (err){
         next(err)
     }
 }
