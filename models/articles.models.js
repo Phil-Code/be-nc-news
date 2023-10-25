@@ -41,7 +41,7 @@ exports.fetchArticleById = async (id) =>{
     }
 }
 exports.fetchArticles = async (sortBy, order, topic, limit = 10, p) =>{
-    const greenlist = ['article_id', 'title', 'topic', 'author', 'created_at', 'votes']
+    const greenlist = ['article_id', 'title', 'topic', 'author', 'created_at', 'votes', 'comment_count']
     
     if (!greenlist.includes(sortBy)){
         sortBy = 'created_at'
